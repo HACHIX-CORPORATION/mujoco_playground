@@ -53,11 +53,11 @@ def default_config() -> config_dict.ConfigDict:
               # tracking_lin_vel=0.0,
               # tracking_ang_vel=0.0,
               feet_air_time=2.0,
-              feet_contact=0.5,
+              feet_contact=0.0,
               feet_clearance=-1.0,
 
               # Costs.
-              ang_vel_xy=-0.0,
+              ang_vel_xy=-0.15,
               lin_vel_z=-0.0,
               orientation=-2.0,
               pose=-1.0,
@@ -117,7 +117,7 @@ def default_config() -> config_dict.ConfigDict:
       push_config=config_dict.create(
           enable=True,
           interval_range=[5.0, 10.0],
-          magnitude_range=[0.1, 1.0],
+          magnitude_range=[0.1, 2.0],
       ),
       gait_frequency=[0.25, 2.0],
       # gait_frequency=[0.0, 0.5],
