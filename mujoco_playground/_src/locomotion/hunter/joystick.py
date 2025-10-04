@@ -585,8 +585,7 @@ class Joystick(hunter_base.HunterEnv):
         ),
         "feet_air_time": self._reward_feet_air_time(
             info["feet_air_time"], first_contact, info["command"]
-        ),
-        "feet_contact": self._reward_feet_contact(data),
+        )
     }
     neg = {
         "ang_vel_xy": self._cost_ang_vel_xy(self.get_global_angvel(data)),
