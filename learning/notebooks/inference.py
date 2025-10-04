@@ -83,7 +83,7 @@ _LOAD_CHECKPOINT_PATH = "/content/drive/MyDrive/HACHIX-project/mujoco_playground
 _LOAD_CHECKPOINT_PATH = "/content/drive/MyDrive/HACHIX-project/mujoco_playground/logs/HunterJoystick-20250930-150416/checkpoints"
 _LOAD_CHECKPOINT_PATH = "/content/drive/MyDrive/HACHIX-project/mujoco_playground/logs/HunterJoystick-20251001-020621/checkpoints"
 
-_LOAD_CHECKPOINT_PATH = "/home/sandbox/Work/mujoco_playground/learning/notebooks/checkpoints/HunterJoystick-20251002-093320/checkpoints"
+_LOAD_CHECKPOINT_PATH = "/home/sandbox/Work/mujoco_playground/learning/notebooks/logs/HunterJoystick-20251004-001043/checkpoints"
 
 env = registry.load(env_name)
 env_cfg = registry.get_default_config(env_name)
@@ -284,7 +284,6 @@ for j in range(1):
   for i in range(env_cfg.episode_length):
       act_rng, rng = jax.random.split(rng)
       ctrl, _ = jit_inference_fn(state.obs, act_rng)
-      print(ctrl)
 
       data = state.data
       if push_step <= i < push_step + push_duration:

@@ -42,7 +42,7 @@ act_size = env.action_size
 print(obs_size, act_size)
 
 _PLAY_ONLY = True
-_LOAD_CHECKPOINT_PATH = "/home/sandbox/Work/mujoco_playground/learning/notebooks/checkpoints/HunterJoystick-20250929-133124/checkpoints/"
+_LOAD_CHECKPOINT_PATH = "/home/sandbox/Work/mujoco_playground/learning/notebooks/logs/HunterJoystick-20250929-133124/checkpoints/"
 
 env = registry.load(env_name)
 env_cfg = registry.get_default_config(env_name)
