@@ -43,28 +43,34 @@ def default_config() -> config_dict.ConfigDict:
       ),
       reward_config=config_dict.create(
           scales=config_dict.create(
-              # Rewards.
-              feet_phase=5.0,
-              tracking_lin_vel=3.5,
-              tracking_ang_vel=0.75,
-              # feet_air_time=2.0,
-
-              # feet_phase=3.0,
-              # tracking_lin_vel=0.0,
-              # tracking_ang_vel=0.0,
-              feet_air_time=2.0,
-              feet_contact=0.5,
-              feet_clearance=-1.0,
-
-              # Costs.
-              ang_vel_xy=-0.0,
-              lin_vel_z=-0.0,
-              orientation=-2.0,
-              pose=-1.0,
-              stand_still=+0.0,
-              foot_slip=-0.1,
+              # Tracking related rewards.
+              tracking_lin_vel=1.0,
+              tracking_ang_vel=0.5,
+              # Base related rewards.
+              lin_vel_z=0.0,
+              ang_vel_xy=-0.15,
+              orientation=-1.0,
+              base_height=0.0,
+              # Energy related rewards.
+              torques=-2.5e-5,
               action_rate=-0.01,
-              feet_distance=-0.0,
+              energy=0.0,
+              # Feet related rewards.
+              feet_clearance=0.0,
+              feet_air_time=2.0,
+              feet_slip=-0.25,
+              feet_height=0.0,
+              feet_phase=1.0,
+              # Other rewards.
+              stand_still=0.0,
+              alive=0.0,
+              termination=-1.0,
+              # Pose related rewards.
+              joint_deviation_knee=-0.1,
+              joint_deviation_hip=-0.25,
+              dof_pos_limits=-1.0,
+              pose=-1.0,
+            #   feet_distance=-0.0,
           ),
           tracking_sigma=0.5,
       ),
@@ -123,7 +129,7 @@ def default_config() -> config_dict.ConfigDict:
       # gait_frequency=[0.0, 0.5],
     #   gait_frequency=[0.0, 0.5],
       # gaits=["walk"],
-      gaits=["walk","stand"],
+      gaits=["walk", "stand"],
       # gaits=["walk","stand","run"],
       foot_height=[0.15, 0.6],
       impl="jax",
@@ -595,7 +601,7 @@ class Joystick(hunter_base.HunterEnv):
             info["last_act"], info["last_last_act"], action
         ),
         "feet_clearance": self._cost_feet_clearance(data),
-        "feet_distance": self._cost_feet_distance(data),
+        # "feet_distance": self._cost_feet_distance(data),
     }
     return pos, neg
 
