@@ -69,8 +69,7 @@ def default_config() -> config_dict.ConfigDict:
               joint_deviation_knee=-0.1,
               joint_deviation_hip=-0.25,
               dof_pos_limits=-1.0,
-              pose=-1.0,
-            #   feet_distance=-0.0,
+              pose=-1.0
           ),
           tracking_sigma=0.5,
       ),
@@ -325,20 +324,10 @@ class Joystick(hunter_base.HunterEnv):
     for k in self._config.reward_config.scales.keys():
       metrics[f"reward/{k}"] = jp.zeros(())
 
-    left_feet_contact = jp.array([
-        collision.geoms_colliding(data, geom_id, self._floor_geom_id)
-        for geom_id in self._left_feet_geom_id
-    ])
-    right_feet_contact = jp.array([
-        collision.geoms_colliding(data, geom_id, self._floor_geom_id)
-        for geom_id in self._right_feet_geom_id
-    ])
-    contact = jp.hstack([jp.any(left_feet_contact), jp.any(right_feet_contact)])
-
     # obs_history = jp.zeros(15 * 42)  # 15 steps of history.
     # obs = self._get_obs(data, info, obs_history, noise_rng)
     # reward, done = jp.zeros(2)
-    obs = self._get_obs(data, info, noise_rng, contact)
+    obs = self._get_obs(data, info, noise_rng)
     reward, done = jp.zeros(2)
     return mjx_env.State(data, obs, reward, done, metrics, info)
 
@@ -468,8 +457,7 @@ class Joystick(hunter_base.HunterEnv):
       self,
       data: mjx.Data,
       info: dict[str, Any],
-      rng: jax.Array,
-      contact: jax.Array,
+      rng: jax.Array
   ) -> jp.ndarray:
     # IMU data: Gravity vector in base frame (3)
     gravity = self.get_gravity(data)
@@ -641,21 +629,21 @@ class Joystick(hunter_base.HunterEnv):
     rew_air_time *= cmd_norm > 0.05  # No reward for zero commands.
     return rew_air_time
 
-  def _reward_feet_contact(
-    self, data:mjx.Data
-  ):
-    left_feet_contact = jp.array([
-        collision.geoms_colliding(data, geom_id, self._floor_geom_id)
-        for geom_id in self._left_feet_geom_id
-    ])
-    right_feet_contact = jp.array([
-        collision.geoms_colliding(data, geom_id, self._floor_geom_id)
-        for geom_id in self._right_feet_geom_id
-    ])
-    feet_contact = jp.hstack(
-        [left_feet_contact.any(), right_feet_contact.any()]
-    )
-    return jp.mean(feet_contact)
+#   def _reward_feet_contact(
+#     self, data:mjx.Data
+#   ):
+#     left_feet_contact = jp.array([
+#         collision.geoms_colliding(data, geom_id, self._floor_geom_id)
+#         for geom_id in self._left_feet_geom_id
+#     ])
+#     right_feet_contact = jp.array([
+#         collision.geoms_colliding(data, geom_id, self._floor_geom_id)
+#         for geom_id in self._right_feet_geom_id
+#     ])
+#     feet_contact = jp.hstack(
+#         [left_feet_contact.any(), right_feet_contact.any()]
+#     )
+#     return jp.mean(feet_contact)
 
 
   def _cost_pose(self, joint_angles: jax.Array) -> jax.Array:
@@ -712,18 +700,7 @@ class Joystick(hunter_base.HunterEnv):
     feet_vel = data.sensordata[self._foot_linvel_sensor_adr]
     vel_xy = feet_vel[..., :2]
     vel_xy_norm_sq = jp.sum(jp.square(vel_xy), axis=-1)
-    left_feet_contact = jp.array([
-        collision.geoms_colliding(data, geom_id, self._floor_geom_id)
-        for geom_id in self._left_feet_geom_id
-    ])
-    right_feet_contact = jp.array([
-        collision.geoms_colliding(data, geom_id, self._floor_geom_id)
-        for geom_id in self._right_feet_geom_id
-    ])
-    feet_contact = jp.hstack(
-        [left_feet_contact.any(), right_feet_contact.any()]
-    )
-    return jp.sum(vel_xy_norm_sq * feet_contact)
+    return jp.sum(vel_xy_norm_sq)
 
   def _cost_feet_clearance(self, data: mjx.Data) -> jax.Array:
     feet_vel = data.sensordata[self._foot_linvel_sensor_adr]
@@ -733,17 +710,3 @@ class Joystick(hunter_base.HunterEnv):
     foot_z = foot_pos[..., -1]
     delta = (foot_z - self._config.foot_height[1]) ** 2
     return jp.sum(delta * vel_norm)
-
-  def _cost_feet_distance(
-      self, data: mjx.Data
-  ) -> jax.Array:
-    left_foot_pos = data.site_xpos[self._feet_site_id[0]]
-    right_foot_pos = data.site_xpos[self._feet_site_id[1]]
-    base_xmat = data.site_xmat[self._imu_site_id]
-    base_yaw = jp.arctan2(base_xmat[1, 0], base_xmat[0, 0])
-    feet_distance = jp.abs(
-        jp.cos(base_yaw) * (left_foot_pos[1] - right_foot_pos[1])
-        - jp.sin(base_yaw) * (left_foot_pos[0] - right_foot_pos[0])
-    )
-    return jp.clip(0.2 - feet_distance, min=0.0, max=0.1)
-    
