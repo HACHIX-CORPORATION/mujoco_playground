@@ -242,6 +242,8 @@ class Joystick(hunter_base.HunterEnv):
     rng, noise_rng, gait_freq_rng, gait_rng, foot_height_rng, cmd_rng = (  # pylint: disable=redefined-outer-name
         jax.random.split(rng, 6)
     )
+    qpos = self._init_q
+    qvel = jp.zeros(self.mjx_model.nv)
 
     # x=+U(-0.5, 0.5), y=+U(-0.2, 0.2), yaw=U(-3.14, 3.14).
     rng, key = jax.random.split(rng)
