@@ -252,7 +252,7 @@ class Joystick(hunter_base.HunterEnv):
     # # rng, key = jax.random.split(rng)
     # # dxy = jax.random.uniform(key, (2,), minval=-0.2, maxval=0.2)
     # # qpos = qpos.at[0:2].set(qpos[0:2] + dxy)
-    # rng, key = jax.random.split(rng)
+    rng, key = jax.random.split(rng)
     yaw = jax.random.uniform(key, (1,), minval=-3.14, maxval=3.14)
     quat = math.axis_angle_to_quat(jp.array([0, 0, 1]), yaw)
     new_quat = math.quat_mul(qpos[3:7], quat)
