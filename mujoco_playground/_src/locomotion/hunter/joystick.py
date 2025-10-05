@@ -175,8 +175,7 @@ class Joystick(hunter_base.HunterEnv):
     self._default_pose = joint_init
 
     # Set joint limits
-    print("self.mj_model.jnt_range", self.mj_model.jnt_range, "shape", self.mj_model.jnt_range.shape)
-    self._lowers, self._uppers = self.mj_model.jnt_range[1:].T
+    self._lowers, self._uppers = self.mj_model.jnt_range[4:].T
 
     self._hx_idxs = jp.array([
         0, 1, 2, 3, 4,  # left leg
@@ -247,30 +246,28 @@ class Joystick(hunter_base.HunterEnv):
     qpos = self._init_q
     qvel = jp.zeros(self.mjx_model.nv)
 
-    # # x=+U(-0.5, 0.5), y=+U(-0.2, 0.2), yaw=U(-3.14, 3.14).
-    # rng, key = jax.random.split(rng)
-    # dxy = jax.random.uniform(key, (2,), minval=-0.2, maxval=0.2)
-    # qpos = qpos.at[0:2].set(qpos[0:2] + dxy)
-    # rng, key = jax.random.split(rng)
-    # yaw = jax.random.uniform(key, (1,), minval=-3.14, maxval=3.14)
-    # quat = math.axis_angle_to_quat(jp.array([0, 0, 1]), yaw)
-    # new_quat = math.quat_mul(qpos[3:7], quat)
-    # qpos = qpos.at[3:7].set(new_quat)
+    # x=+U(-0.5, 0.5), y=+U(-0.2, 0.2), yaw=U(-3.14, 3.14).
+    rng, key = jax.random.split(rng)
+    dxy = jax.random.uniform(key, (2,), minval=-0.2, maxval=0.2)
+    qpos = qpos.at[0:2].set(qpos[0:2] + dxy)
+    rng, key = jax.random.split(rng)
+    yaw = jax.random.uniform(key, (1,), minval=-3.14, maxval=3.14)
+    quat = math.axis_angle_to_quat(jp.array([0, 0, 1]), yaw)
+    new_quat = math.quat_mul(qpos[3:7], quat)
+    qpos = qpos.at[3:7].set(new_quat)
 
-    # # qpos[7:]=*U(0.5, 1.5)
-    # rng, key = jax.random.split(rng)
-    # qpos = qpos.at[7:].set(
-    #     qpos[7:] * jax.random.uniform(key, (10,), minval=0.5, maxval=1.5)
-    # )
+    # qpos[7:]=*U(0.5, 1.5)
+    rng, key = jax.random.split(rng)
+    qpos = qpos.at[7:].set(
+        qpos[7:] * jax.random.uniform(key, (10,), minval=0.5, maxval=1.5)
+    )
 
-    # # d(xyzrpy)=U(-0.5, 0.5)
-    # rng, key = jax.random.split(rng)
-    # qvel = qvel.at[0:6].set(
-    #     jax.random.uniform(key, (6,), minval=-0.5, maxval=0.5)
-    # )
-    
-    print("qpos", qpos, "shape", qpos.shape)
-    print("qvel", qvel, "shape", qvel.shape)
+    # d(xyzrpy)=U(-0.5, 0.5)
+    rng, key = jax.random.split(rng)
+    qvel = qvel.at[0:6].set(
+        jax.random.uniform(key, (6,), minval=-0.5, maxval=0.5)
+    )
+
     data = mjx_env.make_data(
         self.mj_model,
         qpos=qpos,
