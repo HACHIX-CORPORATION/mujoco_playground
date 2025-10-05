@@ -264,7 +264,7 @@ class Joystick(hunter_base.HunterEnv):
     # d(xyzrpy)=U(-0.5, 0.5)
     rng, key = jax.random.split(rng)
     qvel = qvel.at[0:6].set(
-        jax.random.uniform(key, (5,), minval=-0.5, maxval=0.5)
+        jax.random.uniform(key, (6,), minval=-0.5, maxval=0.5)
     )
     
     data = mjx_env.make_data(
