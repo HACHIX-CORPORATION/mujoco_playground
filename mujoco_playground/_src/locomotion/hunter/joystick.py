@@ -34,7 +34,7 @@ def default_config() -> config_dict.ConfigDict:
       lin_vel_scale = 2.0,
       history_len=1,
       obs_noise=config_dict.create(
-          level=1.0,
+          level=0.0,
           scales=config_dict.create(
               joint_pos=0.01,
               joint_vel=1.5,
@@ -82,11 +82,11 @@ def default_config() -> config_dict.ConfigDict:
           scales=config_dict.create(
               # Rewards.
               # feet_phase=5.0,
-              tracking_lin_vel=3.5,
-              tracking_ang_vel=0.75,
+              tracking_lin_vel=1.5,
+              tracking_ang_vel=0.5,
               # feet_air_time=2.0,
 
-              feet_phase=3.0,
+              feet_phase=1.0,
               # tracking_lin_vel=0.0,
               # tracking_ang_vel=0.0,
               feet_air_time=2.0,
@@ -97,12 +97,12 @@ def default_config() -> config_dict.ConfigDict:
               feet_clearance=-1.0,
 
               # Costs.
-              ang_vel_xy=-0.0,
-              # lin_vel_z=-0.0,
-              lin_vel_z=-5.0,
+              ang_vel_xy=-0.1,
+              lin_vel_z=-0.0,
+            #   lin_vel_z=-5.0,
               orientation=-2.0,
               pose=-1.0,
-              stand_still=+4.0,
+              stand_still=0.0,
               # stand_still=+0.0,
               foot_slip=-0.1,
               action_rate=-0.01,
