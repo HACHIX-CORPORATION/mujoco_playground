@@ -24,22 +24,23 @@ _PHASES = np.array([
 
 def default_config() -> config_dict.ConfigDict:
   return config_dict.create(
-      ctrl_dt=0.02,
+      ctrl_dt=0.04,
       sim_dt=0.002,
       episode_length=1000,
       early_termination=True,
       action_repeat=1,
       action_scale=0.5,
       dof_vel_scale=0.05,
+      lin_vel_scale = 2.0,
       history_len=1,
       obs_noise=config_dict.create(
-          level=0.6,
-          # level=0.8,
+          level=1.0,
           scales=config_dict.create(
               joint_pos=0.01,
               joint_vel=1.5,
               gyro=0.2,
               gravity=0.05,
+              linvel=0.1,
           ),
       ),
       # reward_config=config_dict.create(
@@ -173,8 +174,7 @@ class Joystick(hunter_base.HunterEnv):
     self._default_pose = joint_init
 
     # Set joint limits
-    self._lowers = self._mj_model.actuator_ctrlrange[:, 0]
-    self._uppers = self._mj_model.actuator_ctrlrange[:, 1]
+    self._lowers, self._uppers = self.mj_model.jnt_range[1:].T
 
     self._hx_idxs = jp.array([
         0, 1, 2, 3, 4,  # left leg
@@ -243,10 +243,32 @@ class Joystick(hunter_base.HunterEnv):
         jax.random.split(rng, 6)
     )
 
+    # x=+U(-0.5, 0.5), y=+U(-0.2, 0.2), yaw=U(-3.14, 3.14).
+    rng, key = jax.random.split(rng)
+    dxy = jax.random.uniform(key, (2,), minval=-0.2, maxval=0.2)
+    qpos = qpos.at[0:2].set(qpos[0:2] + dxy)
+    rng, key = jax.random.split(rng)
+    yaw = jax.random.uniform(key, (1,), minval=-3.14, maxval=3.14)
+    quat = math.axis_angle_to_quat(jp.array([0, 0, 1]), yaw)
+    new_quat = math.quat_mul(qpos[3:7], quat)
+    qpos = qpos.at[3:7].set(new_quat)
+
+    # qpos[7:]=*U(0.5, 1.5)
+    rng, key = jax.random.split(rng)
+    qpos = qpos.at[7:].set(
+        qpos[7:] * jax.random.uniform(key, (12,), minval=0.5, maxval=1.5)
+    )
+
+    # d(xyzrpy)=U(-0.5, 0.5)
+    rng, key = jax.random.split(rng)
+    qvel = qvel.at[0:6].set(
+        jax.random.uniform(key, (6,), minval=-0.5, maxval=0.5)
+    )
+    
     data = mjx_env.make_data(
         self.mj_model,
-        qpos=self._init_q,
-        qvel=jp.zeros(self.mjx_model.nv),
+        qpos=qpos,
+        qvel=qvel,
         impl=self.mjx_model.impl.value,
         nconmax=self._config.nconmax,
         njmax=self._config.njmax,

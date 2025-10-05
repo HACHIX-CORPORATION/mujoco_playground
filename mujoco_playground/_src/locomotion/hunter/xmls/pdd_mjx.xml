@@ -3,7 +3,7 @@
   <!-- <option timestep='0.002' iterations='50' solver='CG' gravity='0 0 -9.81'> -->
     <!-- <flag sensornoise="enable" frictionloss="enable" /> -->
   <!-- </option> -->
-  <option iterations="1" ls_iterations="5" timestep="0.004">
+  <option iterations="3" ls_iterations="5" timestep="0.002" integrator="Euler">
     <flag eulerdamp="disable"/>
   </option>
 
