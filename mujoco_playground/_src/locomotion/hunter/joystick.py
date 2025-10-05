@@ -175,8 +175,11 @@ class Joystick(hunter_base.HunterEnv):
     self._default_pose = joint_init
 
     # Set joint limits
-    self._lowers, self._uppers = self.mj_model.jnt_range[4:].T
-
+    # self._lowers, self._uppers = self.mj_model.jnt_range[4:].T
+    self._lowers = self._mj_model.actuator_ctrlrange[:, 0]
+    self._uppers = self._mj_model.actuator_ctrlrange[:, 1]
+    print("self._lowers", self._lowers, "shape", self._lowers.shape)
+    print("self._uppers", self._uppers, "shape", self._uppers.shape)
     self._hx_idxs = jp.array([
         0, 1, 2, 3, 4,  # left leg
         5, 6, 7, 8, 9,  # right leg
