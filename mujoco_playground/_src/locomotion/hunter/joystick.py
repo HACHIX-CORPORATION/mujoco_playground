@@ -154,6 +154,7 @@ class Joystick(hunter_base.HunterEnv):
   def _post_init(self):
     # Default standing pose with slightly bent knees
     self._init_q = jp.zeros(self._mjx_model.nq)
+    print("self._init_q.shape", self._init_q.shape)
     self._init_q = self._init_q.at[3:7].set(jp.array([1, 0, 0, 0]))  # quat
     
     # Set joint positions for stable standing
@@ -171,6 +172,8 @@ class Joystick(hunter_base.HunterEnv):
 
     self._init_q = self._init_q.at[7:].set(joint_init)
 
+    print("self._init_q", self._init_q)
+    
     self._default_pose = joint_init
 
     # Set joint limits
