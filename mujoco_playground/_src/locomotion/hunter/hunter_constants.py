@@ -29,13 +29,11 @@ FEET_SITES = [
 
 LEFT_FEET_GEOMS = [
     # "leg_l5_link",  # Left foot end effector
-    "left_foot1",
-    "left_foot2",
+    "left_foot1"
 ]
 RIGHT_FEET_GEOMS = [
     # "leg_r5_link",  # Right foot end effector
-    "right_foot1",
-    "right_foot2",
+    "right_foot1"
 ]
 FEET_GEOMS = LEFT_FEET_GEOMS + RIGHT_FEET_GEOMS
 
@@ -63,6 +61,6 @@ JOINTS_ORDER = [
     "leg_r5_joint",
 ]
 
-HIP_INDICIES = [0, 1, 2]
-KNEE_INDICIES = [3]
-ANKLE_INDICIES = [4]
+HIP_INDICIES = [0, 1, 2, 5, 6, 7]
+KNEE_INDICIES = [3, 8]
+ANKLE_INDICIES = [4, 9]
