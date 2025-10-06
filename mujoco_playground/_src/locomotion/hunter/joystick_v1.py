@@ -118,7 +118,7 @@ class Joystick(hunter_base.HunterEnv):
             config.nconmax = 100 * 8192
             config.njmax = 12 + 100 * 4
         super().__init__(
-            xml_path=consts.task_to_xml(task).as_posix(),
+            xml_path=consts.HUNTER_XML.as_posix(),
             config=config,
             config_overrides=config_overrides,
         )
