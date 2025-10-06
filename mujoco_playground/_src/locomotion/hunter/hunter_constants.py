@@ -37,6 +37,7 @@ RIGHT_FEET_GEOMS = [
     "right_foot1",
     "right_foot2",
 ]
+FEET_GEOMS = LEFT_FEET_GEOMS + RIGHT_FEET_GEOMS
 
 # Robot body names based on pdd.xml
 ROOT_BODY = "base_link"

@@ -162,7 +162,7 @@ class Joystick(hunter_base.HunterEnv):
         self._feet_site_id = np.array(
             [self._mj_model.site(name).id for name in consts.FEET_SITES]
         )
-        self._floor_geom_id = self._mj_model.geom("floor").id
+        self._floor_geom_id = self._mj_model.geom("ground").id
         self._feet_geom_id = np.array(
             [self._mj_model.geom(name).id for name in consts.FEET_GEOMS]
         )
