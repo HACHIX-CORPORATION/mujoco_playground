@@ -134,7 +134,9 @@ class Joystick(hunter_base.HunterEnv):
         self._default_pose = joint_init
 
         # Note: First joint is freejoint.
-        self._lowers, self._uppers = self.mj_model.jnt_range[1:].T
+        # self._lowers, self._uppers = self.mj_model.jnt_range[1:].T
+        self._lowers = self._mj_model.actuator_ctrlrange[:, 0]
+        self._uppers = self._mj_model.actuator_ctrlrange[:, 1]
         c = (self._lowers + self._uppers) / 2
         r = self._uppers - self._lowers
         self._soft_lowers = (
