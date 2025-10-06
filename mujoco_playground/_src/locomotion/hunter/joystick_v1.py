@@ -48,7 +48,6 @@ def default_config() -> config_dict.ConfigDict:
                 hip_pos=0.03,  # rad
                 kfe_pos=0.05,
                 ffe_pos=0.08,
-                faa_pos=0.03,
                 joint_vel=1.5,  # rad/s
                 gravity=0.05,
                 linvel=0.1,
@@ -125,8 +124,14 @@ class Joystick(hunter_base.HunterEnv):
         self._post_init()
 
     def _post_init(self) -> None:
-        self._init_q = jp.array(self._mj_model.keyframe("home").qpos)
-        self._default_pose = jp.array(self._mj_model.keyframe("home").qpos[7:])
+        self._init_q = jp.zeros(self._mjx_model.nq)
+        self._init_q = self._init_q.at[3:7].set(jp.array([1, 0, 0, 0]))
+        self._init_q = self._init_q.at[2].set(-0.029)
+        joint_init = jp.array(
+            [0.0, 0.0, -0.36, 0.72, -0.36, 0.0, -0.05, -0.36, 0.72, -0.36]
+        )
+        self._init_q = self._init_q.at[7:].set(joint_init)
+        self._default_pose = joint_init
 
         # Note: First joint is freejoint.
         self._lowers, self._uppers = self.mj_model.jnt_range[1:].T
@@ -172,15 +177,13 @@ class Joystick(hunter_base.HunterEnv):
             )
         self._foot_linvel_sensor_adr = jp.array(foot_linvel_sensor_adr)
 
-        qpos_noise_scale = np.zeros(12)
-        hip_ids = [0, 1, 2, 6, 7, 8]
-        kfe_ids = [3, 9]
-        ffe_ids = [4, 10]
-        faa_ids = [5, 11]
+        qpos_noise_scale = np.zeros(10)
+        hip_ids = [0, 1, 2, 5, 6, 7]
+        kfe_ids = [3, 8]
+        ffe_ids = [4, 9]
         qpos_noise_scale[hip_ids] = self._config.noise_config.scales.hip_pos
         qpos_noise_scale[kfe_ids] = self._config.noise_config.scales.kfe_pos
         qpos_noise_scale[ffe_ids] = self._config.noise_config.scales.ffe_pos
-        qpos_noise_scale[faa_ids] = self._config.noise_config.scales.faa_pos
         self._qpos_noise_scale = jp.array(qpos_noise_scale)
 
     def reset(self, rng: jax.Array) -> mjx_env.State:
