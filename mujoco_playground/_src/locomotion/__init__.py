@@ -43,6 +43,7 @@ from mujoco_playground._src.locomotion.t1 import joystick as t1_joystick
 from mujoco_playground._src.locomotion.t1 import randomize as t1_randomize
 from mujoco_playground._src.locomotion.hunter import stand as hunter_stand
 from mujoco_playground._src.locomotion.hunter import joystick as hunter_joystick
+from mujoco_playground._src.locomotion.hunter import joystick_v1 as hunter_joystick_v1
 from mujoco_playground._src.locomotion.hunter import joystick_stair as hunter_joystick_stair
 
 mjx_env.ensure_menagerie_exists()  # Ensure menagerie exists when module is imported.
@@ -92,6 +93,7 @@ _envs = {
     ),
     "HunterStand": hunter_stand.Stand,
     "HunterJoystick": hunter_joystick.Joystick, 
+    "HunterJoystickV1": hunter_joystick_v1.Joystick,
     "HunterJoystickStair":hunter_joystick_stair.Joystick,
 }
 

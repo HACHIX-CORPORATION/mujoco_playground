@@ -30,12 +30,12 @@ FEET_SITES = [
 LEFT_FEET_GEOMS = [
     # "leg_l5_link",  # Left foot end effector
     "left_foot1",
-    "left_foot2"
+    "left_foot2",
 ]
 RIGHT_FEET_GEOMS = [
     # "leg_r5_link",  # Right foot end effector
     "right_foot1",
-    "right_foot2"
+    "right_foot2",
 ]
 
 # Robot body names based on pdd.xml
@@ -48,3 +48,20 @@ GLOBAL_ANGVEL_SENSOR = "global_angvel"
 LOCAL_LINVEL_SENSOR = "local_linvel"
 ACCELEROMETER_SENSOR = "accelerometer"
 GYRO_SENSOR = "gyro"
+
+JOINTS_ORDER = [
+    "leg_l1_joint",
+    "leg_l2_joint",
+    "leg_l3_joint",
+    "leg_l4_joint",
+    "leg_l5_joint",
+    "leg_r1_joint",
+    "leg_r2_joint",
+    "leg_r3_joint",
+    "leg_r4_joint",
+    "leg_r5_joint",
+]
+
+HIP_INDICIES = [0, 1, 2]
+KNEE_INDICIES = [3]
+ANKLE_INDICIES = [4]
