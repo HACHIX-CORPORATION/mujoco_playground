@@ -92,9 +92,9 @@ _envs = {
         t1_joystick.Joystick, task="rough_terrain"
     ),
     "HunterStand": hunter_stand.Stand,
-    "HunterJoystick": hunter_joystick.Joystick, 
+    "HunterJoystick": hunter_joystick.Joystick,
     "HunterJoystickV1": hunter_joystick_v1.Joystick,
-    "HunterJoystickStair":hunter_joystick_stair.Joystick,
+    "HunterJoystickStair": hunter_joystick_stair.Joystick,
 }
 
 _cfgs = {
@@ -124,6 +124,7 @@ _cfgs = {
     "T1JoystickRoughTerrain": t1_joystick.default_config,
     "HunterStand": hunter_stand.default_config,
     "HunterJoystick": hunter_joystick.default_config,
+    "HunterJoystickV1": hunter_joystick_v1.default_config,
     "HunterJoystickStair": hunter_joystick_stair.default_config,
 }
 

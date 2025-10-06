@@ -170,7 +170,8 @@ def brax_ppo_config(env_name: str) -> config_dict.ConfigDict:
       "SpotFlatTerrainJoystick",
       "SpotGetup",
       "SpotJoystickGaitTracking",
-      "HunterJoystick"
+      "HunterJoystick",
+      "HunterJoystickV1",
   ):
     pass  # use default config
   else:
