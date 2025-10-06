@@ -115,7 +115,7 @@ class Joystick(hunter_base.HunterEnv):
     ):
         if task.startswith("rough"):
             config.nconmax = 100 * 8192
-            config.njmax = 12 + 100 * 4
+            config.njmax = 10 + 100 * 4
         super().__init__(
             xml_path=consts.HUNTER_XML.as_posix(),
             config=config,
@@ -203,7 +203,7 @@ class Joystick(hunter_base.HunterEnv):
         # qpos[7:]=*U(0.5, 1.5)
         rng, key = jax.random.split(rng)
         qpos = qpos.at[7:].set(
-            qpos[7:] * jax.random.uniform(key, (12,), minval=0.5, maxval=1.5)
+            qpos[7:] * jax.random.uniform(key, (10,), minval=0.5, maxval=1.5)
         )
 
         # d(xyzrpy)=U(-0.5, 0.5)
@@ -432,9 +432,9 @@ class Joystick(hunter_base.HunterEnv):
                 noisy_gyro,  # 3
                 noisy_gravity,  # 3
                 info["command"],  # 3
-                noisy_joint_angles - self._default_pose,  # 12
-                noisy_joint_vel,  # 12
-                info["last_act"],  # 12
+                noisy_joint_angles - self._default_pose,  # 10
+                noisy_joint_vel,  # 10
+                info["last_act"],  # 10
                 phase,
             ]
         )
@@ -455,7 +455,7 @@ class Joystick(hunter_base.HunterEnv):
                 joint_angles - self._default_pose,
                 joint_vel,
                 root_height,  # 1
-                data.actuator_force,  # 12
+                data.actuator_force,  # 10
                 contact,  # 2
                 feet_vel,  # 4*3
                 info["feet_air_time"],  # 2
