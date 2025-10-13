@@ -112,9 +112,9 @@ def default_config() -> config_dict.ConfigDict:
           tracking_sigma=0.5,
       ),
       command_config=config_dict.create(
-          lin_vel_x=[-1.0, 1.0],
+          lin_vel_x=[-1.5, 1.5],
           lin_vel_y=[-1.0, 1.0],
-          ang_vel_yaw=[-1.0, 1.0],
+          ang_vel_yaw=[-1.2, 1.2],
       ),
       push_config=config_dict.create(
           enable=True,
@@ -123,11 +123,11 @@ def default_config() -> config_dict.ConfigDict:
       ),
       # gait_frequency=[0.25, 2.0],
       # gait_frequency=[0.0, 0.5],
-      gait_frequency=[0.5, 4.0],
+      gait_frequency=[1.25, 1.5],
       # gaits=["walk"],
       gaits=["walk", "stand"],
       # gaits=["walk","stand","run"],
-      foot_height=[0.08, 0.4],
+      foot_height=[0.1, 0.1],
       impl="jax",
       nconmax=8 * 1024,
       njmax=10 + 8 * 4,
@@ -541,15 +541,6 @@ class Joystick(hunter_base.HunterEnv):
         phase  # 3
         # total: 43
     ])
-
-    state = jp.hstack(
-      [
-        state,
-        info["gait"],  # 1
-        info["gait_freq"],  # 1
-        info["foot_height"],  # 1
-      ]
-    )  # total: 46
 
     accelerometer = self.get_accelerometer(data)
     global_angvel = self.get_global_angvel(data)
