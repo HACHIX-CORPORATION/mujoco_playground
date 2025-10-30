@@ -110,7 +110,7 @@ def default_config() -> config_dict.ConfigDict:
               termination=-1.0,
               foot_slip=-0.1,
               action_rate=-0.0,  # previous: -0.5
-              feet_distance=-2.0,
+              feet_distance=-1.0,
               collision=-0.0,
           ),
           tracking_sigma=0.5,
@@ -132,7 +132,7 @@ def default_config() -> config_dict.ConfigDict:
       # gaits=["walk"],
       gaits=["walk", "stand"],
       # gaits=["walk","stand","run"],
-      foot_height=[0.1, 0.1,],
+      foot_height=[0.1, 0.1],
       impl="jax",
       nconmax=8 * 1024,
       njmax=10 + 8 * 4,
@@ -805,7 +805,7 @@ class Joystick(hunter_base.HunterEnv):
         jp.cos(base_yaw) * (left_foot_pos[1] - right_foot_pos[1])
         - jp.sin(base_yaw) * (left_foot_pos[0] - right_foot_pos[0])
     )
-    return jp.clip(0.3 - feet_distance, min=0.0, max=0.1)
+    return jp.clip(0.22 - feet_distance, min=0.0, max=0.1)
 
   def _cost_collision(self, data: mjx.Data) -> jax.Array:
     return collision.geoms_colliding(
