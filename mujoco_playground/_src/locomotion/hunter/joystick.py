@@ -122,14 +122,14 @@ def default_config() -> config_dict.ConfigDict:
         #   ang_vel_yaw=[-2*jp.pi, 2*jp.pi]
       ),
       push_config=config_dict.create(
-          enable=True,
+          enable=False,
           interval_range=[5.0, 10.0],
           magnitude_range=[0.1, 2.0],
       ),
       # gait_frequency=[0.25, 2.0],
       # gait_frequency=[0.0, 0.5],
       gait_frequency=[1.25, 1.5],
-      # gaits=["walk"],
+      gaits=["walk"],
       gaits=["walk", "stand"],
       # gaits=["walk","stand","run"],
       foot_height=[0.1, 0.1],
