@@ -129,7 +129,7 @@ def default_config() -> config_dict.ConfigDict:
       # gait_frequency=[0.25, 2.0],
       # gait_frequency=[0.0, 0.5],
       gait_frequency=[1.25, 1.5],
-      gaits=["walk"],
+      # gaits=["walk"],
       gaits=["walk", "stand"],
       # gaits=["walk","stand","run"],
       foot_height=[0.1, 0.1],
