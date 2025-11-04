@@ -163,6 +163,7 @@ def brax_ppo_config(env_name: str) -> config_dict.ConfigDict:
     "FairyJoystickFlatTerrain",
     "FairyJoystickRoughTerrain"
     ):
+    rl_config.num_timesteps = 200_000_000
     rl_config.num_evals = 20
     rl_config.clipping_epsilon = 0.2
     rl_config.num_resets_per_eval = 1
