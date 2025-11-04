@@ -551,8 +551,12 @@ class Joystick(hunter_base.HunterEnv):
         info["last_act"],  # 10
         info["command"],  # 3
         phase,  # 4
-        # total: 46
-    ])
+        #info["gait"],   #1
+        #info["gait_freq"],   #1
+        #info["foot_height"]   #1
+        # total: 49
+      ],
+    )
 
     accelerometer = self.get_accelerometer(data)
     global_angvel = self.get_global_angvel(data)
@@ -576,6 +580,9 @@ class Joystick(hunter_base.HunterEnv):
         contact,  # 2
         feet_vel,  # 4*3
         info["feet_air_time"],  # 2
+        info["gait"],   #1
+        info["gait_freq"],   #1
+        info["foot_height"]   #1
     ])
 
     return {
