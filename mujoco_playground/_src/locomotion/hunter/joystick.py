@@ -83,11 +83,11 @@ def default_config() -> config_dict.ConfigDict:
           scales=config_dict.create(
               # Rewards.
               # feet_phase=5.0,
-              tracking_lin_vel=3.5,
-              tracking_ang_vel=0.75,
+              tracking_lin_vel=1.0,
+              tracking_ang_vel=0.5,
               # feet_air_time=2.0,
 
-              feet_phase=3.0,
+              feet_phase=1.0,
               # tracking_lin_vel=0.0,
               # tracking_ang_vel=0.0,
               feet_air_time=2.0,
@@ -101,17 +101,17 @@ def default_config() -> config_dict.ConfigDict:
               ang_vel_xy=-0.15,  # previous: -0.0
               # lin_vel_z=-0.0,
               lin_vel_z=-0.0,  # previous: -5.0
-              orientation=-2.0,
+              orientation=-1.0,
               joint_deviation_knee=-0.1,
               joint_deviation_hip=-0.5,
               pose=-1.0,  # previous: -0.1
-              stand_still=0.5,  # previous: +4.0
+              stand_still=0.0,  # previous: +4.0
               # stand_still=+0.0,
               termination=-1.0,
               foot_slip=-0.25,
               action_rate=-0.1,  # previous: -0.5
               # feet_distance=-0.3,
-              feet_distance=-2.0,
+              feet_distance=-0.0,
               collision=-0.1,
           ),
           tracking_sigma=0.5,
@@ -119,8 +119,8 @@ def default_config() -> config_dict.ConfigDict:
       command_config=config_dict.create(
           lin_vel_x=[-1.5, 1.5],
           lin_vel_y=[-1.0, 1.0],
-          # ang_vel_yaw=[-1.2, 1.2]
-          ang_vel_yaw=[-2*np.pi, 2*np.pi]
+          ang_vel_yaw=[-1.2, 1.2]
+          # ang_vel_yaw=[-2*np.pi, 2*np.pi]
       ),
       push_config=config_dict.create(
           enable=True,
@@ -129,11 +129,11 @@ def default_config() -> config_dict.ConfigDict:
       ),
     #   gait_frequency=[1.25, 2.0],
       # gait_frequency=[0.0, 0.5],
-      gait_frequency=[0.5, 4.0],
-    #   gaits=["walk"],
-      gaits=["walk", "stand"],
+      gait_frequency=[1.25, 1.5],
+      gaits=["walk"],
+      # gaits=["walk", "stand"],
       # gaits=["walk","stand","run"],
-      foot_height=[0.08, 0.12],
+      foot_height=[0.1, 0.1],
       impl="jax",
       nconmax=8 * 1024,
       njmax=10 + 8 * 4,
