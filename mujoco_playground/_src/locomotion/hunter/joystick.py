@@ -119,7 +119,7 @@ def default_config() -> config_dict.ConfigDict:
       command_config=config_dict.create(
           lin_vel_x=[-1.5, 1.5],
           lin_vel_y=[-1.0, 1.0],
-          # ang_vel_yaw=[-1.2, 1.2]
+        #   ang_vel_yaw=[-1.2, 1.2]
           ang_vel_yaw=[-2*np.pi, 2*np.pi]
       ),
       push_config=config_dict.create(
