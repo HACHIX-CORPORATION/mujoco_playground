@@ -48,7 +48,7 @@ def default_config() -> config_dict.ConfigDict:
               # Rewards.
               tracking_lin_vel=1.0,
               tracking_ang_vel=0.5,
-              feet_phase=3.0,
+              feet_phase=1.0,
               feet_air_time=2.0,
               feet_contact=0.0,
               feet_clearance=0.0,
@@ -384,7 +384,7 @@ class Joystick(fairy_base.FairyEnv):
     return state
 
   def _get_termination(self, data: mjx.Data) -> jax.Array:
-    fall_termination = self.get_gravity(data)[-1] < 0.1
+    fall_termination = self.get_gravity(data)[-1] < 0.5
     return (
         fall_termination | jp.isnan(data.qpos).any() | jp.isnan(data.qvel).any()
     )
