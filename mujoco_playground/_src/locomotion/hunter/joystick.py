@@ -108,19 +108,20 @@ def default_config() -> config_dict.ConfigDict:
               stand_still=0.0,  # previous: +4.0
               # stand_still=+0.0,
               termination=-1.0,
-              foot_slip=-0.25,
+              foot_slip=-0.0,
+              feet_slip=-0.25,
               action_rate=-0.1,  # previous: -0.5
               # feet_distance=-0.3,
               feet_distance=-0.0,
-              collision=-0.1,
+              collision=-0.0,
           ),
           tracking_sigma=0.5,
       ),
       command_config=config_dict.create(
           lin_vel_x=[-1.5, 1.5],
           lin_vel_y=[-1.0, 1.0],
-        #   ang_vel_yaw=[-1.2, 1.2]
-          ang_vel_yaw=[-2*np.pi, 2*np.pi]
+          ang_vel_yaw=[-1.2, 1.2]
+          # ang_vel_yaw=[-2*np.pi, 2*np.pi]
       ),
       push_config=config_dict.create(
           enable=True,
@@ -133,7 +134,7 @@ def default_config() -> config_dict.ConfigDict:
       gaits=["walk"],
       # gaits=["walk", "stand"],
       # gaits=["walk","stand","run"],
-      foot_height=[0.1, 0.1],
+      foot_height=[0.12, 0.12],
       impl="jax",
       nconmax=8 * 1024,
       njmax=10 + 8 * 4,
@@ -174,7 +175,7 @@ class Joystick(hunter_base.HunterEnv):
 
     # # SAME AS CUSTOMER DOC
     self._init_q = self._init_q.at[2].set(-0.029)  # z position - proper standing height
-    joint_init = jp.array([0.0, 0.0, -0.36, 0.72, -0.36, 0.0, -0.05, -0.36, 0.72, -0.36]) 
+    joint_init = jp.array([0.0, 0.0, -0.36, 0.72, -0.36, 0.0, 0.0, -0.36, 0.72, -0.36]) 
 
     self._init_q = self._init_q.at[7:].set(joint_init)
 
@@ -644,7 +645,8 @@ class Joystick(hunter_base.HunterEnv):
         ),
         "joint_deviation_knee": self._cost_joint_deviation_knee(data.qpos[7:]),
         "pose": self._cost_pose(data.qpos[7:]),
-        "foot_slip": self._cost_feet_slip(data),
+        "foot_slip": self._cost_foot_slip(data),
+        "feet_slip": self._cost_feet_slip(data, contact),
         "stand_still": self._cost_stand_still(info["command"], data.qpos[7:]),
         "action_rate": self._cost_action_rate(
             info["last_act"], info["last_last_act"], action
@@ -739,7 +741,7 @@ class Joystick(hunter_base.HunterEnv):
     # Penalize xy axes base angular velocity.
     return jp.sum(jp.square(global_angvel[:2]))
   
-  def _cost_foot_slip(self, data: mjx.Data, contact: jax.Array) -> jax.Array:
+  def _cost_feet_slip(self, data: mjx.Data, contact: jax.Array) -> jax.Array:
     feet_vel = data.sensordata[self._foot_linvel_sensor_adr]
     vel_xy = feet_vel[..., :2]
     vel_xy_norm_sq = jp.sum(jp.square(vel_xy), axis=-1)
@@ -775,7 +777,7 @@ class Joystick(hunter_base.HunterEnv):
   def _cost_termination(self, done: jax.Array) -> jax.Array:
     return done
 
-  def _cost_feet_slip(self, data: mjx.Data) -> jax.Array:
+  def _cost_foot_slip(self, data: mjx.Data) -> jax.Array:
     feet_vel = data.sensordata[self._foot_linvel_sensor_adr]
     vel_xy = feet_vel[..., :2]
     vel_xy_norm_sq = jp.sum(jp.square(vel_xy), axis=-1)

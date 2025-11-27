@@ -15,11 +15,12 @@
 """Domain randomization for the Hunter environment."""
 
 import jax
+import numpy as np
 from mujoco import mjx
 
 FLOOR_GEOM_ID = 0
 TORSO_BODY_ID = 1
-
+ANKLE_JOINT_IDS = np.array([[4, 9]])
 
 def domain_randomize(model: mjx.Model, rng: jax.Array):
   @jax.vmap
@@ -66,12 +67,37 @@ def domain_randomize(model: mjx.Model, rng: jax.Array):
         + jax.random.uniform(key, shape=(10,), minval=-0.05, maxval=0.05)
     )
 
+    # Joint stiffness: *U(0.9, 1.1).
+    rng, key = jax.random.split(rng)
+    kp = model.actuator_gainprm[:, 0] * jax.random.uniform(
+        key, (model.nu,), minval=0.9, maxval=1.1
+    )
+    actuator_gainprm = model.actuator_gainprm.at[:, 0].set(kp)
+    actuator_biasprm = model.actuator_biasprm.at[:, 1].set(-kp)
+
+    # Joint damping: *U(0.9, 1.1).
+    rng, key = jax.random.split(rng)
+    kd = model.dof_damping[6:] * jax.random.uniform(
+        key, (10,), minval=0.9, maxval=1.1
+    )
+    dof_damping = model.dof_damping.at[6:].set(kd)
+
+    # Higher range on the ankles.
+    rng, key = jax.random.split(rng)
+    kd = model.dof_damping[ANKLE_JOINT_IDS] * jax.random.uniform(
+        key, (2,), minval=0.5, maxval=2.0
+    )
+    dof_damping = model.dof_damping.at[ANKLE_JOINT_IDS].set(kd)
+
     return (
         geom_friction,
         dof_frictionloss,
         dof_armature,
         body_mass,
         qpos0,
+        actuator_gainprm,
+        actuator_biasprm,
+        dof_damping
     )
 
   (
@@ -80,6 +106,9 @@ def domain_randomize(model: mjx.Model, rng: jax.Array):
       armature,
       body_mass,
       qpos0,
+      actuator_gainprm,
+      actuator_biasprm,
+      dof_damping
   ) = rand_dynamics(rng)
 
   in_axes = jax.tree_util.tree_map(lambda x: None, model)
@@ -89,6 +118,9 @@ def domain_randomize(model: mjx.Model, rng: jax.Array):
       "dof_armature": 0,
       "body_mass": 0,
       "qpos0": 0,
+      "actuator_gainprm": 0,
+      "actuator_biasprm": 0,
+      "dof_damping": 0,
   })
 
   model = model.tree_replace({
@@ -97,6 +129,9 @@ def domain_randomize(model: mjx.Model, rng: jax.Array):
       "dof_armature": armature,
       "body_mass": body_mass,
       "qpos0": qpos0,
+      "actuator_gainprm": actuator_gainprm,
+      "actuator_biasprm": actuator_biasprm,
+      "dof_damping": dof_damping,
   })
 
   return model, in_axes
