@@ -18,6 +18,7 @@ from mujoco_playground._src import mjx_env
 
 ROOT_PATH = mjx_env.ROOT_PATH / "locomotion" / "hunter" / "xmls"
 HUNTER_FLAT_TERRAIN_XML = ROOT_PATH / "maker_pdd_mjx_no_kv.xml"
+HUNTER_FIXED_TERRAIN_XML = ROOT_PATH / "maker_pdd_mjx_fixed.xml"
 HUNTER_ROUGH_TERRAIN_XML = ROOT_PATH / "pdd_mjx_with_rough_terrain.xml"
 # HUNTER_XML = ROOT_PATH / "pdd_mjx_with_stair.xml"
 
